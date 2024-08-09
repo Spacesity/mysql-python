@@ -17,35 +17,27 @@ try:
 	
 	if conn.is_connected():
 		print("Connected to MySQL database")
-		
-		# Create a cursor object
 		cursor = conn.cursor()
 		while True:
-			command = str(input("execute : ")).strip().lower() 	
+			command = str(input("execute: ")).strip().lower() 	
 			if command == "all":
-				# Execute a query
 				cursor.execute("SELECT * FROM scores")
-				
-				# Fetch result
 				rows = cursor.fetchall()
 				for row in rows:
 					print(row)
 			elif command == "exit":
 				break
 			else:
-				print("error : unknown command")
-		# Close the cursor
+				print("error: unknown command")
 		cursor.close()
-		
 	else:
 		print("Failed to connect to MySQL database")
 
 except mysql.connector.Error as err:
-	print("Error:", err)
+	print("Error: ", err)
 
 finally:
-	# Ensure the connection is closed
 	if conn.is_connected():
 		conn.close()
-		print("MySQL connection is closed")
+		print("MySQL connection closed")
 
