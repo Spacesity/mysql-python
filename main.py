@@ -7,7 +7,6 @@ commands = {
 print("MySQL and Python Program - Type 'commands' to see all commands")
 
 try:
-	# Establish a connection to the MySQL database
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="lucas",
