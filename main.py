@@ -6,7 +6,8 @@ commands = [
 	"create-list",
 	"view-list",
 	"create-task",
-	"remove-task"
+	"remove-task",
+	"exit"
 ]
 
 class Command():
@@ -16,11 +17,12 @@ class Command():
 				print(com)
 	def create_list():
 		if command == commands[1]:
-			list_name = str(input("Enter new list name:"))
+			list_name = str(input("Enter new list name: "))
 			list_creation = f"CREATE TABLE {list_name} (task int, description varchar(200))"
 			cursor.execute(list_creation)
 	def view_list():
 		if command == commands[2]:
+			database_input = str(input("Enter list name: "))
 			list_view = f"SELECT * FROM {database_input}"
 			cursor.execute(list_view)
 			rows = cursor.fetchall()
@@ -28,15 +30,22 @@ class Command():
 				print(row)
 	def create_task():
 		if command == commands[3]:
-			pass
+			list_name = str(input("Enter list name: "))
+			task_name = str(input("Enter task name: "))
+			task_description = str(input("Enter task description: ")).strip().lower()
+			task_creation = f"INSERT INTO {list_name} (task, description) VALUES ({task_name}, {task_description})"
+			cursor.execute(task_creation)
 	def remove_task():
 		if command == commands[4]:
-			pass
+			list_name = str(input("Enter list name: "))
+			task_name = str(input("Enter task name: "))
+			task_deletion = f"DELETE FROM {list_name} WHERE task = {task_name}"
+			cursor.execute(task_deletion)
 
 print(f"MySQL and Python Program - Type '{commands[0]}' to see all commands")
 
 while True:
-	menu = str(input("Login (L) or Exit (E)?: ")).upper()
+	menu = str(input("Login (L) or Quit (Q)?: ")).upper()
 	if menu == "L":
 		host_input = str(input("Enter host name (localhost if on local device): "))
 		user_input = str(input("Enter user name: "))
@@ -54,22 +63,25 @@ while True:
 				cursor = conn.cursor()
 				while True:
 					command = str(input("Execute: ")).strip().lower() 	
-					try:
-						Command.view_commands()
-						Command.create_list()
-						Command.view_list()
-						Command.create_task()
-						Command.remove_task()
-					except mysql.connector.Error as error:
-						print("Error:", error)
-					if command == "exit":
+					if command != "exit":
+						try:
+							Command.view_commands()
+							Command.create_list()
+							Command.view_list()
+							Command.create_task()
+							Command.remove_task()
+						except mysql.connector.Error as error:
+							print("Error:", error)
+					elif command == "exit":
 							break
+					else:
+						print("Invalid")
 				cursor.close()
 				conn.close()
 		except Exception as error:
 			print("Login failed")
 			print("Error:", error)
-	elif menu == "E":
+	elif menu == "Q":
 		print("Goodbye")
 		break
 	else:
